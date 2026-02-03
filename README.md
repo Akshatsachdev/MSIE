@@ -1,10 +1,10 @@
 # 🧠 MSIE — Market Signal Intelligence Engine
 
-**Deterministic Market Intelligence + LLM Reasoning (Gemini 3)**
+**Deterministic Market Intelligence + LLM Reasoning (Gemini-3)**
 
 MSIE is a **production-grade market intelligence system** that converts raw market data into **explainable, decision-grade market context**.
 
-> **Rules decide. Gemini explains.**
+> **Rules decide. Language explains.**  
 > No predictions. No buy/sell signals. Fully auditable.
 
 ---
@@ -23,7 +23,7 @@ Most AI-driven market tools suffer from:
 It separates:
 
 - **Deterministic market logic (rules + math)**
-- **Probabilistic language reasoning (Gemini 3)**
+- **Probabilistic language reasoning (LLM — Gemini-ready)**
 
 This makes MSIE:
 
@@ -35,14 +35,14 @@ This makes MSIE:
 
 ## 🧠 Core Design Philosophy
 
-| Layer               | Responsibility                  |
-| ------------------- | ------------------------------- |
-| Rules Engine        | Determines market state         |
-| Market State Object | Single source of truth          |
-| Gemini 3            | Explains, never decides         |
-| API Layer           | Read-only intelligence delivery |
+| Layer               | Responsibility                            |
+|---------------------|-------------------------------------------|
+| Rules Engine        | Determines market state                   |
+| Market State Object | Single source of truth                    |
+| Reasoning Layer     | Explains (LLM or deterministic fallback)  |
+| API Layer           | Read-only intelligence delivery           |
 
-If Gemini is removed → **MSIE still works**.
+If the LLM is removed → **MSIE still works fully**.
 
 ---
 
@@ -58,21 +58,20 @@ Regime Classification Engine (Rules)
 Market State Object (Deterministic JSON)
         ↓
 ┌─────────────────────────────────────┐
-│   Market Reasoning Engine (MRE)      │
+│   Market Reasoning Engine (MRE)     │
 │                                     │
 │  ┌───────────────┐                  │
-│  │ Gemini 3 LLM  │  ← Explanation   │
-│  │ (Narrator)    │     Only         │
+│  │ LLM (Narrator)│  ← Explanation   │
+│  │ (Gemini-3)    │     Only         │
 │  └───────────────┘                  │
 └─────────────────────────────────────┘
         ↓
-Read-Only Intelligence API
+Production-Grade Intelligence API (v1)
         ↓
-Dashboards / Research / Risk Systems
+Dashboards / Research Desks / Risk Systems / Fintech SaaS
 ```
 
 ---
-
 ## 🧩 Gemini 3 Integration (Critical Layer)
 
 ### Role of Gemini 3
@@ -121,6 +120,18 @@ This contract **prevents hallucination** and ensures compliance.
 
 ---
 
+## 🔒 API Design Principles (Non-Negotiable)
+
+1. Deterministic core
+2. LLM only consumes JSON
+3. Every endpoint is explainable
+4. Stateless & cacheable
+5. Future multi-market ready
+6. Bloomberg / Risk Desk style — **not** a trading bot
+
+---
+
+
 ## ⚙️ Current Capabilities (v1)
 
 ### ✅ Phase 8 — Market State Engine
@@ -137,15 +148,34 @@ This contract **prevents hallucination** and ensures compliance.
 - Institutional-grade language
 - Zero advisory output
 
-### ✅ Phase 10 — Intelligence API
+### ✅ Phase 10 — Production-Grade Intelligence API
 
-- Stateless, read-only API
-- FastAPI + Pydantic
-- Swagger documentation
+- Clean, stateless FastAPI endpoints
+- Health check + dedicated confidence endpoint
+- Combined intelligence endpoint (state + narrative + meta)
+- Clear separation: no calculations in API layer
+- Ready for Gemini 3 flip (llm_used flag)
+- Enterprise-loved features: confidence basis, explainability
 
 ---
 
-## 📊 Example Output
+## 🔌 API Endpoints (v1)
+
+Base: `/api/v1`
+
+| Method | Endpoint                        | Purpose                              | Key Response Fields                     |
+|--------|---------------------------------|--------------------------------------|------------------------------------------|
+| GET    | `/health`                       | Deployment & judge sanity check      | status, service, version                 |
+| GET    | `/market/state`                 | Pure deterministic market snapshot   | symbol, date, market_state, volatility…  |
+| GET    | `/market/narrative`             | Explainable reasoning layer          | market_summary, risk_context, confidence_level… |
+| GET    | `/market/intelligence`          | Combined state + narrative + meta    | state, narrative, meta (engine, deterministic, llm_used) |
+| GET    | `/market/confidence`            | Confidence score + transparent basis | confidence_level, basis (array of reasons) |
+
+All endpoints are **stateless**, **cacheable**, and return **JSON only**.
+
+---
+
+## 📊 Example Outputs
 
 ### Market State (Machine-Readable)
 
@@ -153,6 +183,7 @@ This contract **prevents hallucination** and ensures compliance.
 {
   "symbol": "NIFTY50",
   "date": "2026-02-02",
+  "market_state": "NORMAL_VOL_DOWN",
   "volatility": {
     "value": 0.006,
     "percentile": 32,
@@ -164,12 +195,11 @@ This contract **prevents hallucination** and ensures compliance.
   },
   "liquidity": {
     "status": "NORMAL"
-  },
-  "market_state": "NORMAL_VOL_DOWN"
+  }
 }
 ```
 
-### Market Narrative (Gemini / Deterministic)
+### Market Narrative (Reasoning Layer)
 
 ```json
 {
@@ -181,43 +211,39 @@ This contract **prevents hallucination** and ensures compliance.
 }
 ```
 
----
+### Combined Intelligence
 
-## 🔌 API Usage
-
-### Run Locally
-
-```bash
-uvicorn app.main:app --reload
-```
-
-### Endpoint
-
-```
-GET /api/market/nifty
-```
-
-### Docs
-
-```
-http://127.0.0.1:8000/docs
+```json
+{
+  "state": { ... },
+  "narrative": { ... },
+  "meta": {
+    "engine": "MSIE v1",
+    "deterministic": true,
+    "llm_used": false
+  }
+}
 ```
 
 ---
 
-## 🗂 Repository Structure
+## 🗂 Repository Structure (Updated)
 
 ```
 msie/
 ├── app/
-│   ├── api/                # FastAPI routes
-│   ├── core/               # Market state orchestration
-│   ├── regimes/            # Deterministic rule engines
-│   ├── reasoning/          # Gemini-based reasoning layer
-│   └── utils/              # Indicators & helpers
-├── data/                   # Historical CSV data
+│   ├── api/
+│   │   ├── v1/
+│   │   │   ├── __init__.py
+│   │   │   ├── health.py
+│   │   │   └── market.py          # wires core → reasoning
+│   ├── core/                      # Market state orchestration
+│   ├── regimes/                   # Deterministic rule engines
+│   ├── reasoning/                 # LLM-based reasoning layer
+│   └── utils/                     # Indicators & helpers
+├── data/                          # Historical CSV data
 ├── configs/
-├── frontend/               # Planned
+├── frontend/                      # Planned
 ├── requirements.txt
 └── README.md
 ```
@@ -229,7 +255,7 @@ msie/
 - **Phase 11**: Gemini 3 live integration (API-based)
 - **Phase 12**: Market dashboard (Next.js)
 - **Phase 13**: Multi-index & global markets
-- **Phase 14**: B2B SaaS API hardening
+- **Phase 14**: B2B SaaS API hardening (auth, rate limits, caching)
 
 ---
 
@@ -243,7 +269,7 @@ AI Engineer & Entrepreneur
 
 ## ⚠️ Disclaimer
 
-MSIE provides **market intelligence**, not financial advice.
-All outputs are informational and non-actionable by design.
+MSIE provides **market intelligence**, not financial advice.  
+All outputs are informational and **non-actionable** by design.
 
 ---
