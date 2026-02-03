@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import date
 import logging
+from typing import Optional
 
 from app.utils.indicators import log_returns, rolling_volatility, ema
 from app.regimes.volatility import volatility_percentile, volatility_regime
@@ -24,9 +25,13 @@ class MarketStateError(Exception):
     pass
 
 
-def compute_market_state():
+def compute_market_state(as_of_date: Optional[str] = None):
     """
     Compute current market state based on volatility, trend, and liquidity regimes.
+
+    Args:
+        as_of_date: Optional date string (YYYY-MM-DD) to compute historical market state.
+                   If None, computes state for the most recent date available.
 
     Returns:
         dict: Market state dictionary with volatility, trend, and liquidity metrics
@@ -115,6 +120,23 @@ def compute_market_state():
         # Sort by date + remove duplicates
         df = df.sort_values("date").drop_duplicates(
             subset=["date"], keep="last").reset_index(drop=True)
+
+        # ── AS-OF DATE FILTER (Historical Reconstruction) ──
+        if as_of_date:
+            as_of_ts = pd.to_datetime(as_of_date)
+
+            df = df[df["date"] <= as_of_ts]
+
+            if df.empty:
+                raise MarketStateError(
+                    f"No data available up to as_of_date={as_of_date}"
+                )
+
+            logger.info(
+                f"Evaluating market state AS-OF {df['date'].iloc[-1].date()} "
+                f"using {len(df)} rows"
+            )
+
         logger.info(
             f"Processing {len(df)} clean rows from {df['date'].min().date()} "
             f"to {df['date'].max().date()}"
