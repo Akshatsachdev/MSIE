@@ -13,23 +13,23 @@ MSIE is a **production-grade market intelligence system** that converts raw mark
 
 Most AI-driven market tools suffer from:
 
-* Black-box predictions
-* Non-compliant buy/sell advice
-* Unexplainable outputs
-* Poor trust with institutional users
+- Black-box predictions
+- Non-compliant buy/sell advice
+- Unexplainable outputs
+- Poor trust with institutional users
 
 **MSIE solves this by design.**
 
 It separates:
 
-* **Deterministic market logic (rules + math)**
-* **Probabilistic language reasoning (Gemini 3)**
+- **Deterministic market logic (rules + math)**
+- **Probabilistic language reasoning (Gemini 3)**
 
 This makes MSIE:
 
-* Trustworthy
-* Explainable
-* Enterprise-ready
+- Trustworthy
+- Explainable
+- Enterprise-ready
 
 ---
 
@@ -79,20 +79,20 @@ Dashboards / Research / Risk Systems
 
 Gemini 3 is used **only** for:
 
-* Translating structured market states into
+- Translating structured market states into
+  - Market summaries
+  - Risk context
+  - Regime interpretation
 
-  * Market summaries
-  * Risk context
-  * Regime interpretation
-* Maintaining professional, institutional tone
-* Ensuring low-latency reasoning output
+- Maintaining professional, institutional tone
+- Ensuring low-latency reasoning output
 
 ### What Gemini 3 NEVER Does
 
-* ❌ No price prediction
-* ❌ No buy/sell/hold
-* ❌ No indicator computation
-* ❌ No regime classification
+- ❌ No price prediction
+- ❌ No buy/sell/hold
+- ❌ No indicator computation
+- ❌ No regime classification
 
 ### Gemini Input (Strict Schema)
 
@@ -125,23 +125,23 @@ This contract **prevents hallucination** and ensures compliance.
 
 ### ✅ Phase 8 — Market State Engine
 
-* Rolling log-return volatility
-* Volatility percentile (2Y lookback)
-* EMA-based trend detection
-* Deterministic regime synthesis
+- Rolling log-return volatility
+- Volatility percentile (2Y lookback)
+- EMA-based trend detection
+- Deterministic regime synthesis
 
 ### ✅ Phase 9 — Market Reasoning Engine
 
-* Schema-validated narratives
-* LLM-optional fallback logic
-* Institutional-grade language
-* Zero advisory output
+- Schema-validated narratives
+- LLM-optional fallback logic
+- Institutional-grade language
+- Zero advisory output
 
 ### ✅ Phase 10 — Intelligence API
 
-* Stateless, read-only API
-* FastAPI + Pydantic
-* Swagger documentation
+- Stateless, read-only API
+- FastAPI + Pydantic
+- Swagger documentation
 
 ---
 
@@ -226,17 +226,18 @@ msie/
 
 ## 🚀 Roadmap
 
-* **Phase 11**: Gemini 3 live integration (API-based)
-* **Phase 12**: Market dashboard (Next.js)
-* **Phase 13**: Multi-index & global markets
-* **Phase 14**: B2B SaaS API hardening
+- **Phase 11**: Gemini 3 live integration (API-based)
+- **Phase 12**: Market dashboard (Next.js)
+- **Phase 13**: Multi-index & global markets
+- **Phase 14**: B2B SaaS API hardening
 
 ---
 
 ## 👤 Author
 
 **Akshat Sachdeva**
-AI Engineer & Entrepreneur 
+
+AI Engineer & Entrepreneur
 
 ---
 
