@@ -1,28 +1,54 @@
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
-# Load .env once at import time
+# Load environment variables
 load_dotenv()
 
+# Flags & config
+USE_GEMINI = os.getenv("USE_GEMINI", "false").lower() == "true"
+_GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+_GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
-def call_gemini(prompt: str) -> str:
-    api_key = os.getenv("GEMINI_API_KEY")
+if USE_GEMINI and not _GEMINI_API_KEY:
+    raise RuntimeError("GEMINI_API_KEY not set but USE_GEMINI=true")
 
-    if not api_key:
-        raise RuntimeError("GEMINI_API_KEY not set in .env")
+# Initialize client once
+_client = genai.Client(api_key=_GEMINI_API_KEY) if USE_GEMINI else None
 
-    # Configure Gemini
-    genai.configure(api_key=api_key)
 
-    # NOTE:
-    # As of now, Gemini 3 is not exposed via google-generativeai SDK.
-    # This is the highest officially supported Flash model.
-    model = genai.GenerativeModel("gemini-1.5-flash")
+def call_gemini(
+    prompt: str,
+    temperature: float = 0.3,
+    max_tokens: int | None = 512,
+) -> str:
+    """
+    Calls Gemini (2.0) and returns generated text.
+    Gemini is used ONLY for explanation, not decision logic.
+    """
+    if not USE_GEMINI:
+        raise RuntimeError("Gemini usage is disabled via USE_GEMINI flag")
 
-    response = model.generate_content(prompt)
+    if not prompt or not prompt.strip():
+        raise ValueError("Prompt cannot be empty")
 
-    if not response or not response.text:
-        raise RuntimeError("Empty response from Gemini")
+    config = types.GenerateContentConfig(
+        temperature=temperature,
+        max_output_tokens=max_tokens,
+    )
 
-    return response.text.strip()
+    response = _client.models.generate_content(
+        model=_GEMINI_MODEL,
+        contents=prompt,
+        config=config,
+    )
+
+    # Safe extraction
+    if getattr(response, "text", None):
+        return response.text.strip()
+
+    if response.candidates:
+        return response.candidates[0].content.parts[0].text.strip()
+
+    raise RuntimeError("Empty response from Gemini")
