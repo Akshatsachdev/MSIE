@@ -1,10 +1,10 @@
 # 🧠 MSIE — Market Signal Intelligence Engine
 
-**Deterministic Market Intelligence + LLM Reasoning (Gemini-3)**
+**Deterministic Market Intelligence + LLM Reasoning (Gemini-Ready)**
 
 MSIE is a **production-grade market intelligence system** that converts raw market data into **explainable, decision-grade market context**.
 
-> **Rules decide. Language explains.**  
+> **Rules decide. Language explains.**
 > No predictions. No buy/sell signals. Fully auditable.
 
 ---
@@ -35,12 +35,12 @@ This makes MSIE:
 
 ## 🧠 Core Design Philosophy
 
-| Layer               | Responsibility                            |
-|---------------------|-------------------------------------------|
-| Rules Engine        | Determines market state                   |
-| Market State Object | Single source of truth                    |
-| Reasoning Layer     | Explains (LLM or deterministic fallback)  |
-| API Layer           | Read-only intelligence delivery           |
+| Layer               | Responsibility                           |
+| ------------------- | ---------------------------------------- |
+| Rules Engine        | Determines market state                  |
+| Market State Object | Single source of truth                   |
+| Reasoning Layer     | Explains (LLM or deterministic fallback) |
+| API Layer           | Read-only intelligence delivery          |
 
 If the LLM is removed → **MSIE still works fully**.
 
@@ -62,7 +62,7 @@ Market State Object (Deterministic JSON)
 │                                     │
 │  ┌───────────────┐                  │
 │  │ LLM (Narrator)│  ← Explanation   │
-│  │ (Gemini-3)    │     Only         │
+│  │ (Gemini)      │     Only         │
 │  └───────────────┘                  │
 └─────────────────────────────────────┘
         ↓
@@ -72,51 +72,30 @@ Dashboards / Research Desks / Risk Systems / Fintech SaaS
 ```
 
 ---
-## 🧩 Gemini 3 Integration (Critical Layer)
 
-### Role of Gemini 3
+## 🧩 Gemini Integration (Explanation Layer)
 
-Gemini 3 is used **only** for:
+### Role of Gemini
 
-- Translating structured market states into
+Gemini is used **only** for:
+
+- Translating structured market states into:
   - Market summaries
+  - Regime explanations
   - Risk context
-  - Regime interpretation
+  - Historical-style interpretation
 
 - Maintaining professional, institutional tone
-- Ensuring low-latency reasoning output
 
-### What Gemini 3 NEVER Does
+- Answering **user clarification questions** using system-provided state
+
+### What Gemini NEVER Does
 
 - ❌ No price prediction
 - ❌ No buy/sell/hold
 - ❌ No indicator computation
 - ❌ No regime classification
-
-### Gemini Input (Strict Schema)
-
-```json
-{
-  "volatility": { "regime": "NORMAL", "percentile": 32 },
-  "trend": { "direction": "DOWN", "strength": "STRONG" },
-  "liquidity": { "status": "NORMAL" },
-  "market_state": "NORMAL_VOL_DOWN"
-}
-```
-
-### Gemini Output (Validated)
-
-```json
-{
-  "market_summary": "...",
-  "risk_context": "...",
-  "participant_behavior": "...",
-  "regime_interpretation": "...",
-  "confidence_level": "HIGH"
-}
-```
-
-This contract **prevents hallucination** and ensures compliance.
+- ❌ No inference beyond provided state
 
 ---
 
@@ -131,31 +110,60 @@ This contract **prevents hallucination** and ensures compliance.
 
 ---
 
-
 ## ⚙️ Current Capabilities (v1)
 
-### ✅ Phase 8 — Market State Engine
+### 🧮 Market State Engine
 
-- Rolling log-return volatility
-- Volatility percentile (2Y lookback)
-- EMA-based trend detection
+- Rolling log-return volatility calculation
+- Volatility percentile analysis (2-year lookback)
+- EMA-based trend detection (direction + strength)
 - Deterministic regime synthesis
+- Single authoritative market state object (JSON)
 
-### ✅ Phase 9 — Market Reasoning Engine
+---
 
-- Schema-validated narratives
-- LLM-optional fallback logic
-- Institutional-grade language
-- Zero advisory output
+### 🧠 Market Reasoning Engine
 
-### ✅ Phase 10 — Production-Grade Intelligence API
+- Schema-validated explanatory narratives
+- LLM-optional design with deterministic fallback
+- Institutional-grade, neutral language
+- Strict separation between computation and explanation
+- Zero advisory or predictive output by design
 
-- Clean, stateless FastAPI endpoints
-- Health check + dedicated confidence endpoint
+---
+
+### 🔌 Production-Grade Intelligence API
+
+- Clean, stateless FastAPI architecture
+- Health check and confidence endpoints
 - Combined intelligence endpoint (state + narrative + meta)
-- Clear separation: no calculations in API layer
-- Ready for Gemini 3 flip (llm_used flag)
-- Enterprise-loved features: confidence basis, explainability
+- No calculations performed in the API layer
+- LLM usage controlled via environment flags
+- Built for explainability, auditability, and trust
+
+---
+
+### 💬 Interactive Market Chat (Explainability Layer)
+
+- Dedicated chat API for user clarification and exploration
+- Gemini-powered explanations **strictly bound to system-computed market state**
+- Full market state injected as authoritative context
+- Historical-style regime comparison without forecasting
+- Explicit rule enforcement:
+  - No predictions
+  - No buy/sell/hold signals
+  - No contradiction of computed state
+
+- Professional analyst-style responses
+- Fully auditable and deterministic prompt design
+
+This enables users to ask:
+
+- “Why is the market classified this way?”
+- “How does this compare to past regimes?”
+- “What does this regime usually imply in structure?”
+
+All without violating compliance or introducing decision-making logic.
 
 ---
 
@@ -163,65 +171,44 @@ This contract **prevents hallucination** and ensures compliance.
 
 Base: `/api/v1`
 
-| Method | Endpoint                        | Purpose                              | Key Response Fields                     |
-|--------|---------------------------------|--------------------------------------|------------------------------------------|
-| GET    | `/health`                       | Deployment & judge sanity check      | status, service, version                 |
-| GET    | `/market/state`                 | Pure deterministic market snapshot   | symbol, date, market_state, volatility…  |
-| GET    | `/market/narrative`             | Explainable reasoning layer          | market_summary, risk_context, confidence_level… |
-| GET    | `/market/intelligence`          | Combined state + narrative + meta    | state, narrative, meta (engine, deterministic, llm_used) |
-| GET    | `/market/confidence`            | Confidence score + transparent basis | confidence_level, basis (array of reasons) |
+| Method | Endpoint               | Purpose                                   |
+| ------ | ---------------------- | ----------------------------------------- |
+| GET    | `/health`              | Deployment & judge sanity check           |
+| GET    | `/market/state`        | Deterministic market snapshot             |
+| GET    | `/market/narrative`    | Structured reasoning output               |
+| GET    | `/market/intelligence` | Combined state + narrative + meta         |
+| GET    | `/market/confidence`   | Confidence level with transparent basis   |
+| POST   | `/chat`                | Interactive market explanation (Phase 11) |
 
-All endpoints are **stateless**, **cacheable**, and return **JSON only**.
+All endpoints are **stateless**, **read-only**, and return **JSON only**.
 
 ---
 
-## 📊 Example Outputs
+## 📊 Example Chat Interaction (Phase 11)
 
-### Market State (Machine-Readable)
+**User Question**
 
 ```json
 {
-  "symbol": "NIFTY50",
-  "date": "2026-02-02",
+  "question": "How does the current market regime compare to typical conditions seen over the past year?"
+}
+```
+
+**System Context (Injected)**
+
+```json
+{
   "market_state": "NORMAL_VOL_DOWN",
-  "volatility": {
-    "value": 0.006,
-    "percentile": 32,
-    "regime": "NORMAL"
-  },
-  "trend": {
-    "direction": "DOWN",
-    "strength": "STRONG"
-  },
-  "liquidity": {
-    "status": "NORMAL"
-  }
+  "volatility": { "percentile": 32, "regime": "NORMAL" },
+  "trend": { "direction": "DOWN", "strength": "STRONG" }
 }
 ```
 
-### Market Narrative (Reasoning Layer)
+**Gemini Response**
 
 ```json
 {
-  "market_summary": "The market is currently experiencing a normal volatility environment with a strong downtrend.",
-  "risk_context": "Risk conditions appear structured rather than panic-driven.",
-  "participant_behavior": "Institutional participants are likely maintaining directional exposure.",
-  "regime_interpretation": "Such regimes typically persist until volatility or trend structure shifts.",
-  "confidence_level": "HIGH"
-}
-```
-
-### Combined Intelligence
-
-```json
-{
-  "state": { ... },
-  "narrative": { ... },
-  "meta": {
-    "engine": "MSIE v1",
-    "deterministic": true,
-    "llm_used": false
-  }
+  "answer": "Similar regimes observed over the past year have generally reflected sustained directional phases rather than abrupt reversals, particularly when volatility remained within a normal range."
 }
 ```
 
@@ -236,14 +223,17 @@ msie/
 │   │   ├── v1/
 │   │   │   ├── __init__.py
 │   │   │   ├── health.py
-│   │   │   └── market.py          # wires core → reasoning
-│   ├── core/                      # Market state orchestration
-│   ├── regimes/                   # Deterministic rule engines
-│   ├── reasoning/                 # LLM-based reasoning layer
-│   └── utils/                     # Indicators & helpers
-├── data/                          # Historical CSV data
+│   │   │   ├── market.py
+│   │   │   └── chat.py          # Phase 11
+│   ├── core/                    # Market state orchestration
+│   ├── regimes/                 # Deterministic rule engines
+│   ├── reasoning/
+│   │   └── chat_prompt.py       # Strict Gemini prompt contract
+│   ├── llm/
+│   │   └── gemini_client.py     # LLM client (flag-controlled)
+│   └── utils/
+├── data/
 ├── configs/
-├── frontend/                      # Planned
 ├── requirements.txt
 └── README.md
 ```
@@ -252,24 +242,23 @@ msie/
 
 ## 🚀 Roadmap
 
-- **Phase 11**: Gemini 3 live integration (API-based)
 - **Phase 12**: Market dashboard (Next.js)
 - **Phase 13**: Multi-index & global markets
-- **Phase 14**: B2B SaaS API hardening (auth, rate limits, caching)
+- **Phase 14**: B2B SaaS hardening (auth, rate limits, caching)
+- **Phase 15**: Institutional audit & replay mode
 
 ---
 
 ## 👤 Author
 
 **Akshat Sachdeva**
-
 AI Engineer & Entrepreneur
 
 ---
 
 ## ⚠️ Disclaimer
 
-MSIE provides **market intelligence**, not financial advice.  
+MSIE provides **market intelligence**, not financial advice.
 All outputs are informational and **non-actionable** by design.
 
 ---
