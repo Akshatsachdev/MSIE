@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.chat import router as chat_router
+from msie.app.api.v1.chat import router as chat_router
 
 router = APIRouter(prefix="/api/v1")
 

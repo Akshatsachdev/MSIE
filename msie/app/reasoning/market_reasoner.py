@@ -1,11 +1,11 @@
 import os
 import json
 
-from app.llm.prompts import market_reasoning_prompt
-from app.llm.gemini_client import call_gemini
-from app.llm.schema import GeminiNarrative
-from app.llm.safety import validate_llm_output
-from app.reasoning.output_schema import MarketNarrative
+from msie.app.llm.prompts import market_reasoning_prompt
+from msie.app.llm.gemini_client import call_gemini
+from msie.app.llm.schema import GeminiNarrative
+from msie.app.llm.safety import validate_llm_output
+from msie.app.reasoning.output_schema import MarketNarrative
 
 
 USE_GEMINI = os.getenv("USE_GEMINI", "false").lower() == "true"

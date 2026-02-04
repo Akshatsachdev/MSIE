@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.core.market_state import compute_market_state
-from app.reasoning.market_reasoner import USE_GEMINI, generate_market_narrative
+from msie.app.core.market_state import compute_market_state
+from msie.app.reasoning.market_reasoner import USE_GEMINI, generate_market_narrative
 
 router = APIRouter(prefix="/api/v1/market", tags=["Market Intelligence"])
 

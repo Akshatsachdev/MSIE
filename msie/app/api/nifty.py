@@ -1,8 +1,9 @@
 from fastapi import APIRouter
-from app.core.market_state import build_sample_market_state
-from app.reasoning.gemini import generate_reasoning
+from msie.app.core.market_state import build_sample_market_state
+from msie.app.reasoning.gemini import generate_reasoning
 
 router = APIRouter()
+
 
 @router.get("/msie/nifty")
 def get_nifty_insight():

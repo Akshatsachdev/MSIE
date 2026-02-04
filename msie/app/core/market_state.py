@@ -3,10 +3,10 @@ from datetime import date
 import logging
 from typing import Optional
 
-from app.utils.indicators import log_returns, rolling_volatility, ema
-from app.regimes.volatility import volatility_percentile, volatility_regime
-from app.regimes.trend import trend_direction, trend_strength
-from app.regimes.liquidity import liquidity_status
+from msie.app.utils.indicators import log_returns, rolling_volatility, ema
+from msie.app.regimes.volatility import volatility_percentile, volatility_regime
+from msie.app.regimes.trend import trend_direction, trend_strength
+from msie.app.regimes.liquidity import liquidity_status
 
 
 DATA_PATH = "data/nifty50.csv"

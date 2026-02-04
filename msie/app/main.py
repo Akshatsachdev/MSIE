@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from app.api.v1.health import router as health_router
-from app.api.v1.market import router as market_router
-from app.api.v1.chat import router as chat_router
+from msie.app.api.v1.health import router as health_router
+from msie.app.api.v1.market import router as market_router
+from msie.app.api.v1.chat import router as chat_router
 
 
 app = FastAPI(

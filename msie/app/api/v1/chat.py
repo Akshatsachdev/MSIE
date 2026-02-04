@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from app.reasoning.chat_prompt import build_chat_prompt
-from app.llm.gemini_client import call_gemini
-from app.core.market_state import compute_market_state
+from msie.app.reasoning.chat_prompt import build_chat_prompt
+from msie.app.llm.gemini_client import call_gemini
+from msie.app.core.market_state import compute_market_state
 
 
 router = APIRouter(prefix="/chat", tags=["Chat"])

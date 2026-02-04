@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+.git/
+.gitignore
+.env
+*.log
+*.csv
+*.parquet
+*.pkl
+*.ipynb
