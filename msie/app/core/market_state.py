@@ -2,14 +2,16 @@ import pandas as pd
 from datetime import date
 import logging
 from typing import Optional
+from pathlib import Path
 
 from msie.app.utils.indicators import log_returns, rolling_volatility, ema
 from msie.app.regimes.volatility import volatility_percentile, volatility_regime
 from msie.app.regimes.trend import trend_direction, trend_strength
 from msie.app.regimes.liquidity import liquidity_status
 
-
-DATA_PATH = "data/nifty50.csv"
+# /app/msie/app/core/market_state.py -> parents[2] == /app/msie
+BASE_DIR = Path(__file__).resolve().parents[2]
+DATA_PATH = BASE_DIR / "data" / "nifty50.csv"
 
 # Configure logging (more visible timestamp + level)
 logging.basicConfig(

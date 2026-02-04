@@ -19,9 +19,10 @@ COPY . .
 
 # Required for logging + FastAPI stability
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app/msie
 
 # Cloud Run / Docker standard
 EXPOSE 8080
 
 # Start FastAPI
-CMD ["uvicorn", "msie.app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
