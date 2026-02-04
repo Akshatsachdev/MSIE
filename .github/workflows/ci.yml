@@ -24,6 +24,7 @@ jobs:
 
       - name: Run tests
         run: |
+          export PYTHONPATH=./msie
           pytest -q
 
   docker-build:
