@@ -1,5 +1,3 @@
----
-
 # 🧠 MSIE — Market Signal Intelligence Engine
 
 **Deterministic Market Intelligence + LLM Reasoning (Gemini-3-pro)**
