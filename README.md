@@ -1,3 +1,5 @@
+---
+
 # 🧠 MSIE — Market Signal Intelligence Engine
 
 **Deterministic Market Intelligence + LLM Reasoning (Gemini-3-pro)**
@@ -85,6 +87,7 @@ Gemini is used **only** for:
   - Risk context
 
 - Maintaining professional, institutional tone
+
 - Answering **clarification-only** user questions
 
 ### What Gemini NEVER Does
@@ -237,6 +240,85 @@ http://localhost:8080/health
 - Dockerized and Cloud-Run compatible
 - CI-validated
 - CD intentionally deferred (billing-independent development)
+
+---
+
+## 🧩 MSIE Frontend (Phase 12)
+
+MSIE frontend is a **read-only market intelligence dashboard** designed for
+institutional-style market context analysis.
+
+### Key Principles
+
+- No trading, no signals, no execution
+- Frontend performs **zero financial computation**
+- All intelligence is sourced from backend APIs
+- UI is deterministic and audit-friendly
+
+---
+
+### Architecture
+
+- **Framework:** Next.js (App Router, TypeScript)
+- **Styling:** Tailwind CSS
+- **Theme:** Light / Dark / System (global, persistent)
+- **Charts:** Placeholder only (live timeseries in Phase 13)
+
+---
+
+### Backend Integration
+
+The frontend consumes two APIs:
+
+1. **Market Intelligence**
+   GET /market/state
+
+Returns structured market state:
+
+- Symbol
+- Volatility percentile & regime
+- Trend direction & strength
+- Liquidity
+- Date
+
+2. **Market Confidence**
+   GET /market/confidence
+
+Returns:
+
+- confidence_level (HIGH / MEDIUM / LOW)
+- basis (explanatory reasons)
+
+---
+
+### Data Normalization (Phase 12.1.11)
+
+All backend responses are normalized via:
+`src/lib/normalize.ts`
+
+Responsibilities:
+
+- Adapt backend schemas to frontend view models
+- Handle missing / optional fields safely
+- Prevent frontend assumptions or calculations
+- Preserve backend authority over market interpretation
+
+> ⚠️ Frontend never infers regimes, confidence, or trends.
+
+---
+
+### Current Pages
+
+- **Overview** – Market snapshot & narrative
+- **Market State** – Regime & structure (UI scaffold)
+- **Confidence** – Confidence level & rationale
+- **Explainability Chat** – Read-only clarification interface
+
+---
+
+### Disclaimer
+
+> Informational only. No financial advice.
 
 ---
 
